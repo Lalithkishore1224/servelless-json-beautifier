@@ -16,5 +16,5 @@
 		}
 	},
 	"postCreateCommand": "pip3 install -r requirements.txt",
-	"postStartCommand": "pip3 install -r requirements.txt >/dev/null 2>&1; (for i in $(seq 1 30); do (nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); sleep 3; curl -fsS -m 5 http://127.0.0.1:9000/ >/dev/null 2>&1 && break; done); (while true; do sleep 30; curl -fsS -m 5 http://127.0.0.1:9000/ >/dev/null 2>&1 || (nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); done) &; bash \"${containerWorkspaceFolder:-/workspaces/$(basename $GITHUB_REPOSITORY)}/scripts/servelless-tunnel.sh\" 9000"
+	"postStartCommand": "pip3 install -r requirements.txt >/dev/null 2>&1; (for i in $(seq 1 30); do (nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); sleep 3; curl -fsS -m 5 http://127.0.0.1:9000/ >/dev/null 2>&1 && break; done); (while true; do sleep 30; curl -fsS -m 5 http://127.0.0.1:9000/ >/dev/null 2>&1 || (nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); done) & bash \"${containerWorkspaceFolder:-/workspaces/$(basename $GITHUB_REPOSITORY)}/scripts/servelless-tunnel.sh\" 9000"
 }
