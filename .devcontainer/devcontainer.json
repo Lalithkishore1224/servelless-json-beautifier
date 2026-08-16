@@ -16,5 +16,5 @@
 		}
 	},
 	"postCreateCommand": "pip3 install -r requirements.txt",
-	"postStartCommand": "(nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); bash \"${containerWorkspaceFolder:-/workspaces/$(basename $GITHUB_REPOSITORY)}/scripts/servelless-tunnel.sh\" 9000"
+	"postStartCommand": "pip3 install -r requirements.txt >/dev/null 2>&1; (for i in $(seq 1 30); do (nohup python -m flask run --host 0.0.0.0 --port 9000 --no-debugger --no-reload > /tmp/app.log 2>&1 &); sleep 3; curl -fsS -m 5 http://localhost:9000/ >/dev/null 2>&1 && break; done); bash \"${containerWorkspaceFolder:-/workspaces/$(basename $GITHUB_REPOSITORY)}/scripts/servelless-tunnel.sh\" 9000"
 }

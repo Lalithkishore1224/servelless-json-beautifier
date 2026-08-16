@@ -28,9 +28,19 @@ fi
 nohup "$CF" tunnel --url "http://localhost:$PORT" --no-autoupdate \
   --logfile "$TUN/tunnel.log" >/dev/null 2>&1 &
 
+# Wait for the app itself to respond before publishing (prevents a 502 URL).
+APP_UP=""
+for i in $(seq 1 60); do
+  if curl -fsS -m 5 "http://localhost:$PORT/" >/dev/null 2>&1; then
+    APP_UP=1
+    break
+  fi
+  sleep 2
+done
+
 for i in $(seq 1 90); do
   URL=$(grep -oE 'https://[a-z0-9-]+[.]trycloudflare[.]com' "$TUN/tunnel.log" 2>/dev/null | head -1)
-  if [ -n "$URL" ]; then
+  if [ -n "$URL" ] && [ -n "$APP_UP" ]; then
     mkdir -p "$WS/.servelless"
     printf '{"url":"%s","port":%s,"updated":"%s"}\n' "$URL" "$PORT" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
       > "$WS/.servelless/tunnel-${NAME}.json"
